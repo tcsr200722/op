@@ -30,9 +30,5 @@ git clone https://github.com/tuanqing/install-program package/openwrt-packages/i
 svn co https://github.com/0saga0/OpenClash/trunk/luci-app-openclash package/openwrt-packages/luci-app-openclash
 svn co https://github.com/xiaoqingfengATGH/luci-theme-infinityfreedom/trunk/luci-theme-infinityfreedom package/openwrt-packages/luci-theme-infinityfreedom
 
-#赋予koolddns权限
-chmod 0755 package/openwrt-packages/luci-app-koolddns/root/etc/init.d/koolddns
-chmod 0755 package/openwrt-packages/luci-app-koolddns/root/usr/share/koolddns/aliddns
-
 ./scripts/feeds update -a
 ./scripts/feeds install -a
