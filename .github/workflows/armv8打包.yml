@@ -189,10 +189,11 @@ jobs:
         token: ${{ secrets.RELEASES_TOKEN }}
         artifacts: /opt/openwrt/tmp/*.img.bz2
 
-
   over:
     needs: [kbuild0, kbuild, wbuild0, wbuild]
     runs-on: ubuntu-18.04
     steps:
-    - name: WeChat notification
-      run: curl https://sc.ftqq.com/${{ secrets.ServerChan }}.send?text=打包成功完成
+    #- name: WeChat notification
+    #  run: curl https://sc.ftqq.com/${{ secrets.ServerChan }}.send?text=打包成功完成
+    - name: TG notification #TG推送
+      run: curl "https://api.telegram.org/bot${{ secrets.TG_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TG_BOT_ID }}&text=${{ env.FILE_NAME }}发布成功-编译结束
