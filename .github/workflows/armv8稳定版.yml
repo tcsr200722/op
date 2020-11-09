@@ -77,6 +77,7 @@ jobs:
         sed -i '/lede/ { s/org/org\/snapshots/g }' package/lean/default-settings/files/zzz-default-settings
         sed -i '/openwrt_luci/ { s/sed/# sed/g; }'  package/lean/default-settings/files/zzz-default-settings
         sed -i 's#https://mirrors.cloud.tencent.com/lede#http://256pd.top:9666/稳定版/armv8/bin#g' package/lean/default-settings/files/zzz-default-settings
+        sed -i 's/19db86003509dedb8ace339c183813ca637d65af24d00666411d1590efe33e13/ce94a43898f0824fe082a8913314306468e26387dbb35f28db924d20a3e4d4bf/g' package/firmware/ath10k-firmware/Makefile
 
     - name: SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
