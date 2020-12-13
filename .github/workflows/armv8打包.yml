@@ -83,9 +83,6 @@ jobs:
         sudo ./mk_s905x3_opimg.sh
         sudo ./mk_s922x_opimg.sh
         sudo ./mk_n1_opimg.sh
-        sudo ./mk_beikeyun_opimg.sh
-        sudo ./mk_l1pro_opimg.sh
-        sudo ./n1-to-vplus.sh
         cd /opt/openwrt/tmp
         sudo bzip2 *.img
         echo "::set-output name=status::success"
@@ -173,9 +170,6 @@ jobs:
         sudo ./mk_s905x3_opimg.sh
         sudo ./mk_s922x_opimg.sh
         sudo ./mk_n1_opimg.sh
-        sudo ./mk_beikeyun_opimg.sh
-        sudo ./mk_l1pro_opimg.sh
-        sudo ./n1-to-vplus.sh
         cd /opt/openwrt/tmp
         sudo bzip2 *.img
         echo "::set-output name=status::success"
