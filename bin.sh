@@ -10,12 +10,12 @@ sed -i '92d' package/system/opkg/Makefile
 
 #添加额外软件包
 git clone https://github.com/lisaac/luci-app-dockerman.git package/openwrt-packages/luci-app-dockerman
-svn co https://github.com/xiaorouji/openwrt-package/trunk/package/brook package/openwrt-packages/brook
-svn co https://github.com/xiaorouji/openwrt-package/trunk/package/chinadns-ng package/openwrt-packages/chinadns-ng
-svn co https://github.com/xiaorouji/openwrt-package/trunk/package/trojan-go package/openwrt-packages/trojan-go
-svn co https://github.com/xiaorouji/openwrt-package/trunk/package/trojan-plus package/openwrt-packages/trojan-plus
-svn co https://github.com/xiaorouji/openwrt-package/trunk/package/ssocks package/openwrt-packages/ssocks
-svn co https://github.com/xiaorouji/openwrt-package/trunk/lienol/luci-app-passwall package/openwrt-packages/luci-app-passwall
+svn co https://github.com/xiaorouji/openwrt-passwall/trunk/brook package/openwrt-packages/brook
+svn co https://github.com/xiaorouji/openwrt-package/trunk/chinadns-ng package/openwrt-packages/chinadns-ng
+svn co https://github.com/xiaorouji/openwrt-package/trunk/trojan-go package/openwrt-packages/trojan-go
+svn co https://github.com/xiaorouji/openwrt-package/trunk/trojan-plus package/openwrt-packages/trojan-plus
+svn co https://github.com/xiaorouji/openwrt-package/trunk/ssocks package/openwrt-packages/ssocks
+svn co https://github.com/xiaorouji/openwrt-package/trunk/luci-app-passwall package/openwrt-packages/luci-app-passwall
 svn co https://github.com/siropboy/mypackages/trunk/luci-app-autopoweroff package/openwrt-packages/luci-app-autopoweroff
 svn co https://github.com/siropboy/mypackages/trunk/luci-app-control-timewol package/openwrt-packages/luci-app-control-timewol
 git clone https://github.com/tty228/luci-app-serverchan.git package/openwrt-packages/luci-app-serverchan
