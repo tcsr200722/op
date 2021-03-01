@@ -15,7 +15,7 @@ on:
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
-  CONFIG_FILE: karmv8.config
+  CONFIG_FILE: armv8.config
   DIY_SH: bin.sh
   UPLOAD_BIN_DIR: true
   UPLOAD_FIRMWARE: false
