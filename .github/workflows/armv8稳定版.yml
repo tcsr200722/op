@@ -15,7 +15,7 @@ on:
 env:
   REPO_URL: https://github.com/coolsnowwolf/openwrt
   REPO_BRANCH: lede-17.01
-  CONFIG_FILE: warmv8.config
+  CONFIG_FILE: armv8.config
   DIY_SH: bin.sh
   UPLOAD_BIN_DIR: true
   UPLOAD_FIRMWARE: false
