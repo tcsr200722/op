@@ -1,12 +1,12 @@
-name: x64开发版
+name: x64懒人版
 
 on:
   repository_dispatch:
-    types: [kx64,sshkx64]
+    types: [lx64,sshlx64]
   workflow_dispatch:
     inputs:
       ssh:
-        description: 'kx64'
+        description: 'lx64'
         required: false
         default: 'false'
   schedule:
@@ -23,7 +23,7 @@ env:
   UPLOAD_WETRANSFER: false
   UPLOAD_COWTRANSFER: false
   TZ: Asia/Shanghai
-  FILE_NAME: x64开发版
+  FILE_NAME: x64懒人版
 
 jobs:
   build:
@@ -77,7 +77,7 @@ jobs:
         sed -i 's/OpenWrt/Bin AutoBuild ${{ env.DATE1 }} @ OpenWrt/g' package/lean/default-settings/files/zzz-default-settings
         sed -i '/lede/ { s/org/org\/snapshots/g }' package/lean/default-settings/files/zzz-default-settings
         sed -i '/openwrt_luci/ { s/sed/# sed/g; }'  package/lean/default-settings/files/zzz-default-settings
-        sed -i 's#https://mirrors.cloud.tencent.com/lede#http://256pd.top:9666/开发版/x64/bin#g' package/lean/default-settings/files/zzz-default-settings
+        sed -i 's#https://mirrors.cloud.tencent.com/lede#http://256pd.top:9666/懒人版/x64/bin#g' package/lean/default-settings/files/zzz-default-settings
 
     - name: SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
@@ -138,9 +138,9 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: ${{ env.DATE }} 🚀 x64开发版 | 自动编译
+        name: ${{ env.DATE }} 🚀 x64懒人版 | 自动编译
         allowUpdates: true
-        tag: x64开发版
+        tag: x64懒人版
         commit: master
         token: ${{ secrets.RELEASES_TOKEN }}
         body: |
