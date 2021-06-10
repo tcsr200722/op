@@ -9,7 +9,6 @@ sed -i 's/OpenWrt/Bin-Lean/g' package/base-files/files/bin/config_generate
 sed -i '92d' package/system/opkg/Makefile
 
 #添加额外软件包
-git clone https://github.com/lisaac/luci-app-dockerman.git package/openwrt-packages/luci-app-dockerman
 git clone https://github.com/xiaorouji/openwrt-passwall.git package/openwrt-packages/luci-app-passwall
 svn co https://github.com/siropboy/mypackages/trunk/luci-app-autopoweroff package/openwrt-packages/luci-app-autopoweroff
 svn co https://github.com/siropboy/mypackages/trunk/luci-app-control-timewol package/openwrt-packages/luci-app-control-timewol
@@ -24,7 +23,11 @@ git clone https://github.com/binge8/luci-app-koolddns.git package/openwrt-packag
 #git clone https://github.com/tuanqing/install-program package/openwrt-packages/install-program
 svn co https://github.com/0saga0/OpenClash/trunk/luci-app-openclash package/openwrt-packages/luci-app-openclash
 svn co https://github.com/xiaoqingfengATGH/luci-theme-infinityfreedom/trunk/luci-theme-infinityfreedom package/openwrt-packages/luci-theme-infinityfreedom
-sed -i ':a;N;s|+docker \\\n\t+dockerd|+docker-ce|g;ta' package/openwrt-packages/luci-app-dockerman/applications/luci-app-dockerman/Makefile
+
+#dockerman
+git clone https://github.com/lisaac/luci-app-dockerman.git package/openwrt-packages/luci-app-dockerman
+sed -i '/dockerd/d' package/openwrt-packages/luci-app-dockerman/applications/luci-app-dockerman/Makefile
+sed -i 's/+docker/+docker-ce/g' package/openwrt-packages/luci-app-dockerman/applications/luci-app-dockerman/Makefile
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
