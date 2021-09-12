@@ -35,7 +35,7 @@ jobs:
     - name: WeChat notification #pushbot推送
       run: |
         echo "time=$(date "+%H:%M")" >> $GITHUB_ENV
-        curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}开始编译${{ env.time }}","template":"json"}' http://www.pushplus.plus/send
+        curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译${{ env.time }}","content":"${{ env.FILE_NAME }}开始编译","template":"json"}' http://www.pushplus.plus/send
 
     - name: Checkout
       uses: actions/checkout@main
