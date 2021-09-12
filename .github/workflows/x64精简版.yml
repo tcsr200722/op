@@ -24,7 +24,7 @@ env:
   UPLOAD_COWTRANSFER: false
   TZ: Asia/Shanghai
   FILE_NAME: x64精简版
-  time: date "+%H:%M"
+  time: $(date "+%H:%M")
 
 jobs:
   build:
