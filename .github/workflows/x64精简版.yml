@@ -2,11 +2,11 @@ name: x64精简版
 
 on:
   repository_dispatch:
-    types: [jx64,sshjx64]
+    types: [x64精简版,sshjx64]
   workflow_dispatch:
     inputs:
       ssh:
-        description: 'jx64'
+        description: 'x64精简版'
         required: false
         default: 'false'
   schedule:
