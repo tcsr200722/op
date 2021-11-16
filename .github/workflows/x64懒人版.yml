@@ -2,11 +2,11 @@ name: x64懒人版
 
 on:
   repository_dispatch:
-    types: [lx64,sshlx64]
+    types: [x64懒人版,sshlx64]
   workflow_dispatch:
     inputs:
       ssh:
-        description: 'lx64'
+        description: 'x64懒人版'
         required: false
         default: 'false'
   schedule:
