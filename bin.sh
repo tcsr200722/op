@@ -1,8 +1,8 @@
 #!/bin/bash
 # 修改默认IP
-#sed -i 's/192.168.1.1/192.168.50.5/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/192.168.7.1/g' package/base-files/files/bin/config_generate
 # 修改默认主题
-#sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
+sed -i 's/luci-theme-bootstrap/luci-theme-infinityfreedom/g' feeds/luci/collections/luci/Makefile
 #修改主机名
 sed -i 's/OpenWrt/Bin-Lean/g' package/base-files/files/bin/config_generate
 #关闭自建私有源签名验证
@@ -17,9 +17,10 @@ sed -i '/openwrt_luci/ { s/sed/# sed/g; }'  package/lean/default-settings/files/
 sed -i 's#https://mirrors.cloud.tencent.com/lede#http://256pd.top:9666/懒人版/bin#g' package/lean/default-settings/files/zzz-default-settings
 #修改固件名显示内核版本
 sed -i 's/IMG_PREFIX:=/IMG_PREFIX:=k$(LINUX_VERSION)-/g' include/image.mk
-
+#修改默认feeds，添加passwall和helloworld
+echo 'src-git helloworld https://github.com/fw876/helloworld' >>feeds.conf.default
+echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
 #添加额外软件包
-git clone https://github.com/xiaorouji/openwrt-passwall.git package/openwrt-packages/luci-app-passwall
 svn co https://github.com/siropboy/mypackages/trunk/luci-app-autopoweroff package/openwrt-packages/luci-app-autopoweroff
 svn co https://github.com/siropboy/mypackages/trunk/luci-app-control-timewol package/openwrt-packages/luci-app-control-timewol
 git clone https://github.com/binge8/luci-theme-argon-mc.git package/openwrt-packages/luci-theme-argon-mc
@@ -31,7 +32,6 @@ git clone https://github.com/binge8/luci-app-koolddns.git package/openwrt-packag
 svn co https://github.com/0saga0/OpenClash/trunk/luci-app-openclash package/openwrt-packages/luci-app-openclash
 svn co https://github.com/xiaoqingfengATGH/luci-theme-infinityfreedom/trunk/luci-theme-infinityfreedom package/openwrt-packages/luci-theme-infinityfreedom
 git clone https://github.com/lisaac/luci-app-dockerman.git package/openwrt-packages/luci-app-dockerman
-git clone https://github.com/fw876/helloworld.git package/openwrt-packages/helloworld
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
