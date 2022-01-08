@@ -11,6 +11,8 @@ git clone https://github.com/binge8/luci-app-koolddns.git package/openwrt-packag
 svn co https://github.com/0saga0/OpenClash/trunk/luci-app-openclash package/openwrt-packages/luci-app-openclash
 svn co https://github.com/xiaoqingfengATGH/luci-theme-infinityfreedom/trunk/luci-theme-infinityfreedom package/openwrt-packages/luci-theme-infinityfreedom
 git clone https://github.com/lisaac/luci-app-dockerman.git package/openwrt-packages/luci-app-dockerman
+git clone https://github.com/binge8/helloworld.git package/openwrt-packages/helloworld
+git clone https://github.com/xiaorouji/openwrt-passwall.git package/openwrt-packages/luci-app-passwall
 #更新安装feeds
 ./scripts/feeds update -a
 ./scripts/feeds install -a
