@@ -18,6 +18,7 @@ env:
   CONFIG_FILE: lx64.config
   DIY1_SH: diy1.sh
   DIY2_SH: diy2.sh
+  FEEDS_CONF: feeds
   UPLOAD_BIN_DIR: true
   UPLOAD_FIRMWARE: false
   UPLOAD_RELEASE: true
