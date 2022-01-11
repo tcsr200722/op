@@ -166,10 +166,3 @@ jobs:
     - name: WeChat notification #pushbot推送
       if: steps.organize.outputs.status == 'success' && !cancelled()
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束${{ env.time }}","template":"json"}' http://www.pushplus.plus/send
-
-    #- name: 删除旧的编译记录
-    - name: Delete workflow runs
-      uses: GitRML/delete-workflow-runs@main
-      with:
-        retain_days: 10
-        keep_minimum_runs: 10
