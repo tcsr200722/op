@@ -1,0 +1,144 @@
+name: armv8
+
+on:
+  repository_dispatch:
+    types: [armv8,ssharmv8]
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'armv8'
+        required: false
+        default: 'false'
+  #schedule:
+    #- cron: 00 16 * * *
+
+env:
+  REPO_URL: https://github.com/coolsnowwolf/lede
+  REPO_BRANCH: master
+  CONFIG_FILE: armv8.config
+  CORE: core
+  DIY1_SH: diy1.sh
+  DIY2_SH: diy2.sh
+  FEEDS_CONF: feeds
+  UPLOAD_BIN_DIR: true
+  UPLOAD_FIRMWARE: false
+  UPLOAD_RELEASE: true
+  UPLOAD_WETRANSFER: false
+  UPLOAD_COWTRANSFER: false
+  TZ: Asia/Shanghai
+  FILE_NAME: armv8
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+    #- name: TG notification #TG推送
+    #  run: curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${{ env.FILE_NAME }}开始编译"     
+    - name: WeChat notification #pushbot推送
+      run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}开始编译","template":"json"}' http://www.pushplus.plus/send
+
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
+        sudo -E apt-get -qq update
+        sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004)
+        sudo -E apt-get -qq autoremove --purge
+        sudo -E apt-get -qq clean
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+    - name: Clone source code # 克隆源代码
+      id: source
+      working-directory: /workdir
+      run: |
+        df -hT $PWD
+        git clone $REPO_URL -b $REPO_BRANCH openwrt
+        ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+    - name: Load custom feeds
+      run: |
+        [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
+        chmod +x $DIY1_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY1_SH
+    - name: Load custom configuration
+      run: |
+        [ -e files ] && mv files openwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        chmod +x $DIY2_SH
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY2_SH
+        sed -i 's/OpenWrt/Bin AutoBuild ${{ env.DATE1 }} @ OpenWrt/g' package/lean/default-settings/files/zzz-default-settings
+    - name: SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssharmv8')
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+
+    - name: Download package
+      id: package
+      run: |
+        cd openwrt
+        make defconfig
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+    - name: Compile the firmware
+      id: compile
+      run: |
+        cd openwrt
+        echo -e "$(($(nproc) + 1)) thread compile"
+        make -j$(($(nproc) + 1)) || make -j1 V=s
+        echo "::set-output name=status::success"
+        
+    - name: Check space usage
+      if: (!cancelled())
+      run: df -hT
+	  
+    - name: 打包镜像
+      if: steps.compile.outputs.status == 'success' && !cancelled()
+      uses: unifreq/openwrt_packit@master
+      env:
+        OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
+        PACKAGE_SOC: s905x3
+        KERNEL_VERSION_NAME: 5.14.12
+
+    - name: Upload bin directory
+      uses: actions/upload-artifact@main
+      if: ${{ env.PACKAGED_STATUS }}.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true' && !cancelled()
+      with:
+        name: armv8
+        path: ${{ env.PACKAGED_OUTPUTPATH }}
+
+    - name: Upload firmware directory
+      uses: actions/upload-artifact@main
+      if: env.UPLOAD_FIRMWARE == 'true' && ${{ env.PACKAGED_STATUS }}.outputs.status == 'success' && !cancelled()
+      with:
+        name: armv8
+        path: ${{ env.PACKAGED_OUTPUTPATH }}
+
+    - name: Create release
+      uses: ncipollo/release-action@v1
+      if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }}.outputs.status == 'success' && !cancelled()
+      with:
+        name: ${{ env.DATE }} 🚀 armv8 | 自动编译
+        allowUpdates: true
+        tag: armv8
+        commit: master
+        token: ${{ secrets.RELEASES_TOKEN }}
+        body: |
+          ${{ env.useVersionInfo }}
+        artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
+
+    #- name: TG notification #TG推送
+    #  if: steps.organize.outputs.status == 'success' && !cancelled()
+    #  run: curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${{ env.FILE_NAME }}发布成功-编译结束\n${{ env.useVersionInfo }}"
+    - name: WeChat notification #pushbot推送
+      if: ${{ env.PACKAGED_STATUS }}.outputs.status == 'success' && !cancelled()
+      run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束${{ env.time }}","template":"json"}' http://www.pushplus.plus/send
