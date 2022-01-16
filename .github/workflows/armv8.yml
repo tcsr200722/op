@@ -100,7 +100,7 @@ jobs:
     - name: Check space usage
       if: (!cancelled())
       run: df -hT
-	  
+
     - name: 打包镜像
       if: steps.compile.outputs.status == 'success' && !cancelled()
       uses: unifreq/openwrt_packit@master
