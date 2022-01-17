@@ -41,7 +41,6 @@ jobs:
         echo "DATE1=$(date "+%Y.%m.%d")" >> $GITHUB_ENV
 
     - name: 打包镜像
-      if: steps.compile.outputs.status == 'success' && !cancelled()
       uses: unifreq/openwrt_packit@master
       env:
         OPENWRT_ARMVIRT: https://github.com/binge8/op/releases/download/公告/openwrt-armvirt-64-default-rootfs.tar.gz
