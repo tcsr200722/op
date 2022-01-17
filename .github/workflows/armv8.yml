@@ -64,6 +64,7 @@ jobs:
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY1_SH
         cd openwrt
+        git clone https://github.com/ophub/luci-app-amlogic.git package/openwrt-packages/luci-app-amlogic
         $GITHUB_WORKSPACE/$DIY1_SH
     - name: Load custom configuration
       run: |
