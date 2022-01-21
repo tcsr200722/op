@@ -122,14 +122,11 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: ${{ env.DATE }} 🚀 armv8 | 自动编译
         allowUpdates: true
-        tag: armv8
+        tag: 公告
         commit: master
         token: ${{ secrets.RELEASES_TOKEN }}
-        body: |
-          ${{ env.useVersionInfo }}
-        artifacts: ${{ env.FIRMWARE }}/*
+        artifacts: ${{ env.FIRMWARE }}/*.tar.gz
 
     - name: WeChat notification #pushbot推送
       if: steps.organize.outputs.status == 'success' && !cancelled()
