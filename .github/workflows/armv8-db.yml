@@ -68,7 +68,7 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
       with:
-        name: 公告[➦移步](https://github.com/binge8/op/edit/master/.github/workflows/公告.md).  
+        name: 公告
         allowUpdates: true
         tag: 公告
         commit: master
