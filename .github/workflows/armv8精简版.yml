@@ -22,7 +22,7 @@ env:
   UPLOAD_BIN_DIR: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  FILE_NAME: jarmv8
+  FILE_NAME: armv8精简版
 
 jobs:
   build:
