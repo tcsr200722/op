@@ -127,7 +127,7 @@ jobs:
         token: ${{ secrets.RELEASES_TOKEN }}
         body: |
           ${{ env.useVersionInfo }}
-        artifacts: ${{ env.FIRMWARE }}/*.tar.gz,config.buildinfo
+        artifacts: ${{ env.FIRMWARE }}/*.tar.gz,${{ env.FIRMWARE }}/config.buildinfo
 
     - name: 打包镜像
       uses: unifreq/openwrt_packit@master
