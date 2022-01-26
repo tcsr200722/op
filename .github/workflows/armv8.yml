@@ -118,15 +118,38 @@ jobs:
         name: armv8
         path: ${{ env.FIRMWARE }}
       
-    - name: Create release
+    - name: Create release #上传编译固件
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
       with:
+        name: ${{ env.DATE }} 🚀 armv8 | 自动编译
         allowUpdates: true
-        tag: 公告
+        tag: armv8
         commit: master
         token: ${{ secrets.RELEASES_TOKEN }}
-        artifacts: ${{ env.FIRMWARE }}/*.tar.gz
+        body: |
+          ${{ env.useVersionInfo }}
+        artifacts: ${{ env.FIRMWARE }}/*.tar.gz,config.buildinfo
+
+    - name: 打包镜像
+      uses: unifreq/openwrt_packit@master
+      env:
+        OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
+        PACKAGE_SOC: s905x3
+        KERNEL_VERSION_NAME: 5.15.15
+
+    - name: Create release #上传打包固件
+      uses: ncipollo/release-action@v1
+      if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
+      with:
+        name: ${{ env.DATE }} 🚀 armv8 | 自动编译
+        allowUpdates: true
+        tag: armv8
+        commit: master
+        token: ${{ secrets.RELEASES_TOKEN }}
+        body: |
+          ${{ env.useVersionInfo }}
+        artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
 
     - name: WeChat notification #pushbot推送
       if: steps.organize.outputs.status == 'success' && !cancelled()
