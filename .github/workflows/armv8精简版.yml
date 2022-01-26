@@ -2,11 +2,11 @@ name: armv8精简版
 
 on:
   repository_dispatch:
-    types: [jarmv8,sshjarmv8]
+    types: [armv8精简版,sshjarmv8]
   workflow_dispatch:
     inputs:
       ssh:
-        description: 'jarmv8'
+        description: 'armv8精简版'
         required: false
         default: 'false'
   schedule:
