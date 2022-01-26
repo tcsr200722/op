@@ -19,7 +19,7 @@ env:
   DIY1_SH: diy1.sh
   DIY2_SH: diy2.sh
   FEEDS_CONF: feeds
-  UPLOAD_BIN_DIR: true
+  UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: false
   UPLOAD_RELEASE: true
   UPLOAD_WETRANSFER: false
@@ -70,11 +70,11 @@ jobs:
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-        chmod +x $DIY2_SH
         cd openwrt
-        $GITHUB_WORKSPACE/$DIY2_SH
+        sed -i 's/192.168.1.1/192.168.7.1/g' package/base-files/files/bin/config_generate
+        sed -i 's/luci-theme-bootstrap/luci-theme-infinityfreedom/g' feeds/luci/collections/luci/Makefile
+        sed -i 's/OpenWrt/Bin-Lean/g' package/base-files/files/bin/config_generate
         sed -i 's/OpenWrt/Bin AutoBuild ${{ env.DATE1 }} @ OpenWrt/g' package/lean/default-settings/files/zzz-default-settings
-        sed -i 's/IMG_PREFIX:=k$(LINUX_VERSION)-/IMG_PREFIX:=/g' include/image.mk
     - name: SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
       if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssharmv8')
@@ -122,7 +122,7 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: ${{ env.DATE }} 🚀 armv8 | 自动编译
+        name: ${{ env.DATE }} 🚀 自用n1_x96 | 自动编译
         allowUpdates: true
         tag: armv8
         commit: master
@@ -135,14 +135,14 @@ jobs:
       uses: unifreq/openwrt_packit@master
       env:
         OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
-        PACKAGE_SOC: s905x3
+        PACKAGE_SOC: s905x3_s905d
         KERNEL_VERSION_NAME: 5.15.15
 
     - name: Create release #上传打包固件
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
       with:
-        name: ${{ env.DATE }} 🚀 armv8 | 自动编译
+        name: ${{ env.DATE }} 🚀 自用n1_x96 | 自动编译
         allowUpdates: true
         tag: armv8
         commit: master
