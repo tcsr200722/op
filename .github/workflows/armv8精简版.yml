@@ -20,10 +20,7 @@ env:
   DIY2_SH: diy2.sh
   FEEDS_CONF: feeds
   UPLOAD_BIN_DIR: false
-  UPLOAD_FIRMWARE: false
   UPLOAD_RELEASE: true
-  UPLOAD_WETRANSFER: false
-  UPLOAD_COWTRANSFER: false
   TZ: Asia/Shanghai
   FILE_NAME: jarmv8
 
@@ -136,7 +133,7 @@ jobs:
       uses: unifreq/openwrt_packit@master
       env:
         OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
-        KERNEL_VERSION_NAME: 5.10.90_5.15.15
+        KERNEL_VERSION_NAME: 5.10.90_5.16.2
 
     - name: Create release #上传打包固件
       uses: ncipollo/release-action@v1
