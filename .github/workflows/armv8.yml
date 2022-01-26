@@ -9,8 +9,8 @@ on:
         description: 'armv8'
         required: false
         default: 'false'
-  #schedule:
-    #- cron: 00 16 * * *
+  schedule:
+    - cron: 00 16 * * *
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
