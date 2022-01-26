@@ -12,6 +12,7 @@ svn co https://github.com/xiaoqingfengATGH/luci-theme-infinityfreedom/trunk/luci
 git clone https://github.com/lisaac/luci-app-dockerman.git package/openwrt-packages/luci-app-dockerman
 git clone https://github.com/fw876/helloworld.git package/openwrt-packages/helloworld
 git clone https://github.com/xiaorouji/openwrt-passwall.git package/openwrt-packages/luci-app-passwall
+git clone https://github.com/ophub/luci-app-amlogic.git package/openwrt-packages/luci-app-amlogic
 #更新安装feeds
 ./scripts/feeds update -a
 ./scripts/feeds install -a
