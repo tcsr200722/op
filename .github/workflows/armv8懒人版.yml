@@ -22,7 +22,7 @@ env:
   UPLOAD_BIN_DIR: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  FILE_NAME: larmv8
+  FILE_NAME: armv8懒人版
 
 jobs:
   build:
@@ -115,7 +115,7 @@ jobs:
         name: larmv8
         path: ${{ env.FIRMWARE }}
       
-    - name: Create release #上传编译固件
+    - name: release上传编译固件
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
       with:
@@ -131,10 +131,11 @@ jobs:
     - name: 打包镜像
       uses: unifreq/openwrt_packit@master
       env:
+        PACKAGE_SOC: all
         OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
         KERNEL_VERSION_NAME: 5.10.90_5.16.2
 
-    - name: Create release #上传打包固件
+    - name: release上传打包固件
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
       with:
