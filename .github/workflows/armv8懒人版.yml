@@ -2,11 +2,11 @@ name: armv8懒人版
 
 on:
   repository_dispatch:
-    types: [larmv8,sshlarmv8]
+    types: [armv8懒人版,sshlarmv8]
   workflow_dispatch:
     inputs:
       ssh:
-        description: 'larmv8'
+        description: 'armv8懒人版'
         required: false
         default: 'false'
   schedule:
