@@ -71,9 +71,9 @@ jobs:
         $GITHUB_WORKSPACE/$DIY2_SH
         sed -i 's/OpenWrt/Bin AutoBuild ${{ env.DATE1 }} @ OpenWrt/g' package/lean/default-settings/files/zzz-default-settings
         sed -i 's/IMG_PREFIX:=k$(LINUX_VERSION)-/IMG_PREFIX:=/g' include/image.mk
-        sed -i "s|https.*/OpenWrt|https://github.com/binge8/op|g" package/luci-app-amlogic/root/etc/config/amlogic
-        sed -i "s|ARMv8|jarmv8|g" package/luci-app-amlogic/root/etc/config/amlogic
-        sed -i "s|opt/kernel|https://github.com/breakings/OpenWrt/kernel|g" package/luci-app-amlogic/root/etc/config/amlogic
+        sed -i "s|https.*/OpenWrt|https://github.com/binge8/op|g" package/openwrt-packages/luci-app-amlogic/root/etc/config/amlogic
+        sed -i "s|ARMv8|jarmv8|g" package/openwrt-packages/luci-app-amlogic/root/etc/config/amlogic
+        sed -i "s|opt/kernel|https://github.com/breakings/OpenWrt/kernel|g" package/openwrt-packages/luci-app-amlogic/root/etc/config/amlogic
     - name: SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
       if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'sshjarmv8')
@@ -120,7 +120,7 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: ${{ env.DATE }} 🚀 armv8精简版 | 自动编译
+        name: ${{ env.DATE }} 🚀 armv8(全系)精简版 | 自动编译
         allowUpdates: true
         tag: jarmv8
         commit: master
@@ -139,7 +139,7 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
       with:
-        name: ${{ env.DATE }} 🚀 armv8精简版 | 自动编译
+        name: ${{ env.DATE }} 🚀 armv8(全系)精简版 | 自动编译
         allowUpdates: true
         tag: jarmv8
         commit: master
