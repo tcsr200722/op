@@ -89,32 +89,23 @@ jobs:
         echo -e "$(($(nproc) + 1)) thread compile"
         make -j$(($(nproc) + 1)) || make -j1 V=s
         echo "::set-output name=status::success"
-    - name: Check space usage
-      if: (!cancelled())
-      run: df -hT
     - name: 打包镜像
       uses: unifreq/openwrt_packit@master
       env:
         PACKAGE_SOC: all
         OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
         KERNEL_VERSION_NAME: 5.10.90_5.16.2
-    - name: Organize files
-      run: |
-        cd ${{ env.PACKAGED_OUTPUTPATH }}
-        echo "${{ env.useVersionInfo }}" > ${{ env.DATE }}更新说明.md
-        tar -zcvf bin.tar.gz *
-        rm -rf *.md
     - name: 上传固件
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
       with:
-        name: ${{ env.DATE }} 🚀 armv8(全系)精简版 | 自动编译
+        name: ${{ env.DATE }} 🚀 armv8系列精简版 | 自动编译
         allowUpdates: true
         tag: jarmv8
         commit: master
         token: ${{ secrets.RELEASES_TOKEN }}
         body: |
           ${{ env.useVersionInfo }}
-        artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
+        artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*，openwrt/bin/targets/*/*/config.buildinfo
     - name: pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束${{ env.time }}","template":"json"}' http://www.pushplus.plus/send
