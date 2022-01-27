@@ -90,6 +90,10 @@ jobs:
       run: |
         tar -zcvf bin.tar.gz openwrt/bin
         cp bin.tar.gz ./openwrt/bin/targets/x86/64/bin.tar.gz
+        cd openwrt/bin/targets/x86/64
+        rm -rf packages
+        bzip2 *.img
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
     - name: Create release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
@@ -101,6 +105,6 @@ jobs:
         token: ${{ secrets.RELEASES_TOKEN }}
         body: |
           ${{ env.useVersionInfo }}
-        artifacts: openwrt/bin/targets/x86/64/*.tar.gz,openwrt/bin/targets/x86/64/config.buildinfo
+        artifacts: ${{ env.FIRMWARE }}/*
     - name: WeChat notification #pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束","template":"json"}' http://www.pushplus.plus/send
