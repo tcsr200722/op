@@ -109,7 +109,7 @@ jobs:
     - name: Organize files
       run: |
         cd ${{ env.PACKAGED_OUTPUTPATH }}
-        tar -zcvf bin.tar.gz
+        tar -zcvf bin.tar.gz *
 
     - name: 上传固件
       uses: ncipollo/release-action@v1
