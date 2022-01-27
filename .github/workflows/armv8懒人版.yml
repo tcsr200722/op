@@ -92,19 +92,10 @@ jobs:
     - name: Check space usage
       if: (!cancelled())
       run: df -hT
-    - name: 打包镜像
-      uses: unifreq/openwrt_packit@master
-      env:
-        PACKAGE_SOC: all
-        OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
-        KERNEL_VERSION_NAME: 5.10.90_5.16.2
     - name: Organize files
       run: |
-        echo "${{ env.useVersionInfo }}" > openwrt/bin/${{ env.DATE }}更新说明.md
-        tar -zcvf bin1.tar.gz openwrt/bin
-        cp bin1.tar.gz ${{ env.PACKAGED_OUTPUTPATH }}/bin.tar.gz
-        tar -zcvf bin.tar.gz ${{ env.PACKAGED_OUTPUTPATH }}
-        rm -rf ${{ env.PACKAGED_OUTPUTPATH }}/bin1.tar.gz
+        tar -zcvf bin.tar.gz openwrt/bin
+        cp bin.tar.gz openwrt/bin/*/*/*/bin.tar.gz
     - name: upload release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
@@ -116,6 +107,6 @@ jobs:
         token: ${{ secrets.RELEASES_TOKEN }}
         body: |
           ${{ env.useVersionInfo }}
-        artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
+        artifacts: openwrt/bin/*/*/*/*.tar.gz,openwrt/bin/*/*/*/config.buildinfo
     - name: WeChat notification #pushbot推送
-      run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束${{ env.time }}","template":"json"}' http://www.pushplus.plus/send
+      run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束","template":"json"}' http://www.pushplus.plus/send
