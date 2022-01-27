@@ -99,7 +99,7 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
       with:
-        name: ${{ env.DATE }} 🚀 armv8(全系)懒人版 | 自动编译
+        name: ${{ env.DATE }} 🚀 armv8系列懒人版 | 自动编译
         allowUpdates: true
         tag: larmv8
         commit: master
