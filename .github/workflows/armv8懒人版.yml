@@ -101,8 +101,10 @@ jobs:
     - name: Organize files
       run: |
         echo "${{ env.useVersionInfo }}" > openwrt/bin/${{ env.DATE }}更新说明.md
-        tar -zcvf bin.tar.gz openwrt/bin
-        cp bin.tar.gz ${{ env.PACKAGED_OUTPUTPATH }}/bin.tar.gz
+        tar -zcvf bin1.tar.gz openwrt/bin
+        cp bin1.tar.gz ${{ env.PACKAGED_OUTPUTPATH }}/bin.tar.gz
+        tar -zcvf bin.tar.gz ${{ env.PACKAGED_OUTPUTPATH }}
+        rm -rf ${{ env.PACKAGED_OUTPUTPATH }}/bin1.tar.gz
     - name: upload release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
