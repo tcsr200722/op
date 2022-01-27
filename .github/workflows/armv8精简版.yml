@@ -19,7 +19,6 @@ env:
   DIY1_SH: diy1.sh
   DIY3_SH: diy3.sh
   FEEDS_CONF: feeds
-  UPLOAD_BIN_DIR: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
   FILE_NAME: armv8精简版
@@ -99,34 +98,6 @@ jobs:
     - name: Check space usage
       if: (!cancelled())
       run: df -hT
-      
-    - name: Organize files
-      id: organize
-      if: steps.compile.outputs.status == 'success' && !cancelled()
-      run: |
-        cd openwrt/bin/targets/*/* 
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "::set-output name=status::success"
-
-    - name: Upload bin directory
-      uses: actions/upload-artifact@main
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true' && !cancelled()
-      with:
-        name: jarmv8
-        path: ${{ env.FIRMWARE }}
-      
-    - name: release上传编译固件
-      uses: ncipollo/release-action@v1
-      if: env.UPLOAD_RELEASE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
-      with:
-        name: ${{ env.DATE }} 🚀 armv8(全系)精简版 | 自动编译
-        allowUpdates: true
-        tag: jarmv8
-        commit: master
-        token: ${{ secrets.RELEASES_TOKEN }}
-        body: |
-          ${{ env.useVersionInfo }}
-        artifacts: ${{ env.FIRMWARE }}/*.tar.gz,${{ env.FIRMWARE }}/config.buildinfo
 
     - name: 打包镜像
       uses: unifreq/openwrt_packit@master
@@ -135,7 +106,12 @@ jobs:
         OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
         KERNEL_VERSION_NAME: 5.10.90_5.16.2
 
-    - name: release上传打包固件
+    - name: Organize files
+      run: |
+        cd ${{ env.PACKAGED_OUTPUTPATH }}
+        tar -zcvf bin.tar.gz
+
+    - name: 上传固件
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
       with:
@@ -149,5 +125,4 @@ jobs:
         artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
 
     - name: pushbot推送
-      if: steps.organize.outputs.status == 'success' && !cancelled()
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束${{ env.time }}","template":"json"}' http://www.pushplus.plus/send
