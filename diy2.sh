@@ -12,6 +12,6 @@ sed -i '/lede/ { s/downloads/https\:\/\/downloads/g }' package/lean/default-sett
 sed -i '/lede/ { s/mirrors/https\:\/\/mirrors/g }' package/lean/default-settings/files/zzz-default-settings
 sed -i '/lede/ { s/org/org\/snapshots/g }' package/lean/default-settings/files/zzz-default-settings
 sed -i '/openwrt_luci/ { s/sed/# sed/g; }'  package/lean/default-settings/files/zzz-default-settings
-sed -i 's#https://mirrors.cloud.tencent.com/lede#http://256pd.top:9666/x64懒人版/bin#g' package/lean/default-settings/files/zzz-default-settings
+sed -i 's#https://mirrors.cloud.tencent.com/lede#http://256pd.top:9666/x64/bin#g' package/lean/default-settings/files/zzz-default-settings
 #修改固件名显示内核版本
 sed -i 's/IMG_PREFIX:=/IMG_PREFIX:=k$(LINUX_VERSION)-/g' include/image.mk
