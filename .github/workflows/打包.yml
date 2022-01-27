@@ -53,7 +53,7 @@ jobs:
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
       with:
-        omitNameDuringUpdate： true
+        omitNameDuringUpdate: true
         allowUpdates: true
         tag: larmv8
         token: ${{ secrets.RELEASES_TOKEN }}
