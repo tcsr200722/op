@@ -20,26 +20,18 @@ env:
   DIY1_SH: diy1.sh
   DIY2_SH: diy2.sh
   FEEDS_CONF: feeds
-  UPLOAD_BIN_DIR: true
-  UPLOAD_FIRMWARE: false
   UPLOAD_RELEASE: true
-  UPLOAD_WETRANSFER: false
-  UPLOAD_COWTRANSFER: false
   TZ: Asia/Shanghai
   FILE_NAME: x64懒人版
 
 jobs:
   build:
     runs-on: ubuntu-20.04
-    steps:
-    #- name: TG notification #TG推送
-    #  run: curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${{ env.FILE_NAME }}开始编译"     
+    steps:  
     - name: WeChat notification #pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}开始编译","template":"json"}' http://www.pushplus.plus/send
-
     - name: Checkout
       uses: actions/checkout@main
-
     - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
@@ -52,22 +44,18 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
-
     - name: Clone source code # 克隆源代码
-      id: source
       working-directory: /workdir
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
-
     - name: Load custom feeds
       run: |
         [ -e $FEEDS_CONF ] && mv $FEEDS_CONF openwrt/feeds.conf.default
         chmod +x $DIY1_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY1_SH
-
     - name: Load custom configuration
       run: |
         [ -e files ] && mv files openwrt/files
@@ -77,65 +65,39 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY2_SH
         sed -i 's/OpenWrt/Bin AutoBuild ${{ env.DATE1 }} @ OpenWrt/g' package/lean/default-settings/files/zzz-default-settings
-
     - name: SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
       if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'sshlx64')
       env:
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-
     - name: Download package
-      id: package
       run: |
         cd openwrt
         make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
-
     - name: Compile the firmware
-      id: compile
       run: |
         cd openwrt
         echo -e "$(($(nproc) + 1)) thread compile"
         make -j$(($(nproc) + 1)) || make -j1 V=s
         echo "::set-output name=status::success"        
-
     - name: Check space usage
       if: (!cancelled())
       run: df -hT
-
     - name: Organize files
-      id: organize
-      if: steps.compile.outputs.status == 'success' && !cancelled()
       run: |
-        echo "${{ env.useVersionInfo }}" > openwrt/bin/${{ env.DATE }}更新说明.md
         tar -zcvf bin.tar.gz openwrt/bin
         cp bin.tar.gz ./openwrt/bin/targets/x86/64/bin.tar.gz
         cd openwrt/bin/targets/x86/64
         rm -rf packages
         bzip2 *.img
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "::set-output name=status::success"
-
-    - name: Upload bin directory
-      uses: actions/upload-artifact@main
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true' && !cancelled()
-      with:
-        name: OpenWrt-lx64
-        path: openwrt/bin/targets/x86/64/bin.tar.gz
-
-    - name: Upload firmware directory
-      uses: actions/upload-artifact@main
-      if: env.UPLOAD_FIRMWARE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
-      with:
-        name: lx64
-        path: ${{ env.FIRMWARE }}
-
     - name: Create release
       uses: ncipollo/release-action@v1
-      if: env.UPLOAD_RELEASE == 'true' && steps.organize.outputs.status == 'success' && !cancelled()
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
         name: ${{ env.DATE }} 🚀 x64懒人版 | 自动编译
         allowUpdates: true
@@ -145,24 +107,5 @@ jobs:
         body: |
           ${{ env.useVersionInfo }}
         artifacts: ${{ env.FIRMWARE }}/*
-
-    - name: Upload firmware to cowtransfer #奶牛快传
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
-      run: |
-        curl -fsSL git.io/file-transfer | sh
-        ./transfer cow --block 2621440 -s -p 64 --no-progress ${{ env.FIRMWARE }} 2>&1 | tee cowtransfer.log
-        echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
-
-    - name: Upload firmware to WeTransfer
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
-      run: |
-        curl -fsSL git.io/file-transfer | sh
-        ./transfer wet -s -p 16 --no-progress ${{ env.FIRMWARE }} 2>&1 | tee wetransfer.log
-        echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
-
-    #- name: TG notification #TG推送
-    #  if: steps.organize.outputs.status == 'success' && !cancelled()
-    #  run: curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${{ env.FILE_NAME }}发布成功-编译结束\n${{ env.useVersionInfo }}"
     - name: WeChat notification #pushbot推送
-      if: steps.organize.outputs.status == 'success' && !cancelled()
-      run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束${{ env.time }}","template":"json"}' http://www.pushplus.plus/send
+      run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束","template":"json"}' http://www.pushplus.plus/send
