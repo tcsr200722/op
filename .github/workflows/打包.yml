@@ -54,6 +54,7 @@ jobs:
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
       with:
         omitNameDuringUpdate: true
+        omitBodyDuringUpdate: true
         allowUpdates: true
         tag: larmv8
         token: ${{ secrets.RELEASES_TOKEN }}
