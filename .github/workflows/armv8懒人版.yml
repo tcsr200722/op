@@ -94,7 +94,7 @@ jobs:
     - name: Organize files
       run: |
         tar -zcvf bin.tar.gz openwrt/bin
-        cp bin.tar.gz ./openwrt/bin/targets/*/*/bin.tar.gz
+        bin.tar.gz openwrt/bin/targets/*/*
     - name: upload release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
