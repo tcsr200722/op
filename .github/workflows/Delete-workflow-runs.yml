@@ -1,4 +1,4 @@
-name: 删除指定工作流
+name: Delete-workflow-runs
 
 on:
   repository_dispatch:
