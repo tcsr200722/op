@@ -22,10 +22,8 @@ jobs:
   build:
     runs-on: ubuntu-20.04
 
-    steps:
-    #- name: TG notification #TG推送
-    #  run: curl "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=${{ env.FILE_NAME }}开始编译"     
-    - name: WeChat notification #pushbot推送
+    steps:    
+    - name: pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}开始编译","template":"json"}' http://www.pushplus.plus/send
     - name: Checkout
       uses: actions/checkout@main
@@ -103,6 +101,6 @@ jobs:
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.RELEASES_TOKEN }}
-        event-type: db
-    - name: WeChat notification #pushbot推送
+        event-type: ldb
+    - name: pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束","template":"json"}' http://www.pushplus.plus/send
