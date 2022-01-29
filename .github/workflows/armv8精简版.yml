@@ -90,7 +90,7 @@ jobs:
       env:
         PACKAGE_SOC: all
         OPENWRT_ARMVIRT: openwrt/bin/targets/*/*/*.tar.gz
-        KERNEL_VERSION_NAME: 5.10.90_5.16.2
+        KERNEL_VERSION_NAME: 5.4.170_5.16.2
     - name: 上传固件
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
