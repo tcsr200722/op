@@ -54,5 +54,10 @@ jobs:
         tag: larmv8
         token: ${{ secrets.RELEASES_TOKEN }}
         artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
+    - name: 触发删除流
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.RELEASES_TOKEN }}
+        event-type: dl
     - name: WeChat notification #pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}成功-结束${{ env.time }}","template":"json"}' http://www.pushplus.plus/send
