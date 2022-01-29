@@ -107,5 +107,10 @@ jobs:
         body: |
           ${{ env.useVersionInfo }}
         artifacts: openwrt/bin/targets/*/*/*.tar.gz,openwrt/bin/targets/*/*/config.buildinfo
+    - name: Trigger build
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.RELEASES_TOKEN }}
+        event-type: db
     - name: WeChat notification #pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束","template":"json"}' http://www.pushplus.plus/send
