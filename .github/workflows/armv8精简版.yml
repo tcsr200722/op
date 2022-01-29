@@ -61,7 +61,7 @@ jobs:
         sed -i 's/OpenWrt/Bin AutoBuild ${{ env.DATE1 }} @ OpenWrt/g' package/lean/default-settings/files/zzz-default-settings
         sed -i "s|https.*/OpenWrt|https://github.com/binge8/op|g" package/openwrt-packages/luci-app-amlogic/luci-app-amlogic/root/etc/config/amlogic
         sed -i "s|ARMv8|jarmv8|g" package/openwrt-packages/luci-app-amlogic/luci-app-amlogic/root/etc/config/amlogic
-        sed -i "s|opt/kernel|https://github.com/breakings/OpenWrt/kernel|g" package/openwrt-packages/luci-app-amlogic/luci-app-amlogic/root/etc/config/amlogic
+        sed -i "s|opt/kernel|https://github.com/breakings/OpenWrt/tree/main/opt/kernel|g" package/openwrt-packages/luci-app-amlogic/luci-app-amlogic/root/etc/config/amlogic
     - name: Download package
       run: |
         cd openwrt
