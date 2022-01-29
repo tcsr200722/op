@@ -2,13 +2,8 @@ name: x64懒人版
 
 on:
   repository_dispatch:
-    types: [x64懒人版,sshlx64]
+    types: lx64
   workflow_dispatch:
-    inputs:
-      ssh:
-        description: 'x64懒人版'
-        required: false
-        default: 'false'
   schedule:
     - cron: 00 16 * * *
 
@@ -65,12 +60,6 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY2_SH
         sed -i 's/OpenWrt/Bin AutoBuild ${{ env.DATE1 }} @ OpenWrt/g' package/lean/default-settings/files/zzz-default-settings
-    - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'sshlx64')
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     - name: Download package
       run: |
         cd openwrt
