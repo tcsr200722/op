@@ -6,11 +6,11 @@ on:
   workflow_dispatch:
     inputs:
       ssh:
-        description: 'bd'
+        description: 'db'
         required: false
         default: 'false'
-  schedule:
-    - cron: 00 23 * * *
+  #schedule:
+    #- cron: 00 23 * * *
 
 env:
   UPLOAD_RELEASE: true
