@@ -2,13 +2,8 @@ name: 打包
 
 on:
   repository_dispatch:
-    types: [db]
+    types: db
   workflow_dispatch:
-    inputs:
-      ssh:
-        description: 'db'
-        required: false
-        default: 'false'
   #schedule:
     #- cron: 00 23 * * *
 
