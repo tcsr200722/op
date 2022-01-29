@@ -2,7 +2,7 @@ name: cs
 
 on:
   repository_dispatch:
-    types: [cs]
+    types: [db]
   workflow_dispatch:
     inputs:
       ssh:
@@ -20,4 +20,4 @@ jobs:
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.RELEASES_TOKEN }}
-        event-type: db
+        event-type: dl
