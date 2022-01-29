@@ -82,8 +82,7 @@ jobs:
         rm -rf $bin1/*.img bin2/packages
         tar -zcvf bin.tar.gz openwrt/bin
         cp bin.tar.gz bin2
-        cd bin2
-        bzip2 *.img
+        cd bin2 && bzip2 *.img
     - name: Create release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
