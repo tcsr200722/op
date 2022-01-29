@@ -1,4 +1,14 @@
 name: cs
+
+on:
+  repository_dispatch:
+    types: [cs]
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'cs'
+        required: false
+        default: 'false'
 jobs:
   build:
     runs-on: ubuntu-20.04
