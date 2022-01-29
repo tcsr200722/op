@@ -81,7 +81,7 @@ jobs:
     - name: Organize files
       run: |
         bin1=openwrt/bin/targets/armvirt/64
-        mkdir -p bin2 && cp $bin1/* bin2
+        mkdir -p bin2 && cp -r $bin1/* bin2
         rm -rf $bin1/*.tar.gz bin2/packages
         tar -zcvf bin.tar.gz openwrt/bin
         cp bin.tar.gz bin2
