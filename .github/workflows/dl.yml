@@ -17,7 +17,7 @@ jobs:
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
       with:
-        retain_days: 3
-        keep_minimum_runs: 3
+        retain_days: 1
+        keep_minimum_runs: 4
     - name: pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions运行记录清理>op","content":"清理成功","template":"json"}' http://www.pushplus.plus/send
