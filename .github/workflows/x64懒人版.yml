@@ -23,7 +23,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     steps:  
-    - name: WeChat notification #pushbot推送
+    - name: pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}开始编译","template":"json"}' http://www.pushplus.plus/send
     - name: Checkout
       uses: actions/checkout@main
@@ -90,11 +90,11 @@ jobs:
       with:
         name: ${{ env.DATE }} 🚀 x64懒人版 | 自动编译
         allowUpdates: true
-        tag: x64懒人版
+        tag: lx64
         commit: master
         token: ${{ secrets.RELEASES_TOKEN }}
         body: |
           ${{ env.useVersionInfo }}
         artifacts: bin2/*
-    - name: WeChat notification #pushbot推送
+    - name: pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束","template":"json"}' http://www.pushplus.plus/send
