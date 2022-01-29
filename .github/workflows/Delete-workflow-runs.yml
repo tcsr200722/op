@@ -3,6 +3,7 @@ name: Delete workflow runs
 on:
   repository_dispatch:
     types: [dl]
+  workflow_dispatch:
   schedule:
     - cron: 0 0 */2 * *
 
