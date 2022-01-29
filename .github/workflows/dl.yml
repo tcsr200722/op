@@ -1,11 +1,11 @@
-name: Delete-workflow-runs
+name: dl
 
 on:
   repository_dispatch:
     types: dl
   workflow_dispatch:
   schedule:
-    - cron: 0 0 */2 * *
+    - cron: 0 23  * *
 
 jobs:
   build:
@@ -14,13 +14,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@main
-
-    #删除旧的编译记录
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
       with:
-        retain_days: 1
+        retain_days: 3
         keep_minimum_runs: 3
-
-    - name: WeChat notification #pushbot推送
+    - name: pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions运行记录清理>op","content":"清理成功","template":"json"}' http://www.pushplus.plus/send
