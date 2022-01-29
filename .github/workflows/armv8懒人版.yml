@@ -82,8 +82,11 @@ jobs:
       run: df -hT
     - name: Organize files
       run: |
+        bin1=openwrt/bin/targets/armvirt/64
+        mkdir -p bin2 && cp $bin1/* bin2
+        rm -rf $bin1/*.tar.gz bin2/packages
         tar -zcvf bin.tar.gz openwrt/bin
-        cp bin.tar.gz openwrt/bin/targets/*/*
+        cp bin.tar.gz bin2
     - name: upload release
       uses: ncipollo/release-action@v1
       if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
@@ -95,7 +98,7 @@ jobs:
         token: ${{ secrets.RELEASES_TOKEN }}
         body: |
           ${{ env.useVersionInfo }}
-        artifacts: openwrt/bin/targets/*/*/*.tar.gz,openwrt/bin/targets/*/*/config.buildinfo
+        artifacts: bin2/*.tar.gz,bin2/config.buildinfo
     - name: 触发打包流
       uses: peter-evans/repository-dispatch@v1
       with:
