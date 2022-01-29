@@ -1,8 +1,8 @@
-name: 打包
+name: ldb
 
 on:
   repository_dispatch:
-    types: db
+    types: ldb
   workflow_dispatch:
   #schedule:
     #- cron: 00 23 * * *
@@ -10,7 +10,7 @@ on:
 env:
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  FILE_NAME: 打包
+  FILE_NAME: ldb
 
 jobs:
   build:
@@ -31,9 +31,6 @@ jobs:
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
-    - name: Check space usage
-      if: (!cancelled())
-      run: df -hT
     - name: 打包镜像
       uses: unifreq/openwrt_packit@master
       env:
