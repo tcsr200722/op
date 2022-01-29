@@ -1,8 +1,8 @@
-name: x64精简版
+name: armv8懒人版
 
 on:
   repository_dispatch:
-    types: jx64
+    types: larmv8
   workflow_dispatch:
   schedule:
     - cron: 00 16 * * *
@@ -10,20 +10,19 @@ on:
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
   REPO_BRANCH: master
-  CONFIG_FILE: jx64.config
-  CORE: core
+  CONFIG_FILE: larmv8.config
   DIY1_SH: diy1.sh
-  DIY2_SH: diy2.sh
+  DIY3_SH: diy3.sh
   FEEDS_CONF: feeds
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
-  FILE_NAME: x64精简版
+  FILE_NAME: armv8懒人版
 
 jobs:
   build:
     runs-on: ubuntu-20.04
 
-    steps:
+    steps:    
     - name: pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}开始编译","template":"json"}' http://www.pushplus.plus/send
     - name: Checkout
@@ -41,6 +40,7 @@ jobs:
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
     - name: Clone source code # 克隆源代码
+      id: source
       working-directory: /workdir
       run: |
         df -hT $PWD
@@ -56,11 +56,13 @@ jobs:
       run: |
         [ -e files ] && mv files openwrt/files
         [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-        [ -e $CORE ] && mv $CORE openwrt/package/lean/autocore/files/x86/autocore
-        chmod +x $DIY2_SH
+        chmod +x $DIY3_SH
         cd openwrt
-        $GITHUB_WORKSPACE/$DIY2_SH
+        $GITHUB_WORKSPACE/$DIY3_SH
         sed -i 's/OpenWrt/Bin AutoBuild ${{ env.DATE1 }} @ OpenWrt/g' package/lean/default-settings/files/zzz-default-settings
+        sed -i "s|https.*/OpenWrt|https://github.com/binge8/op|g" package/openwrt-packages/luci-app-amlogic/luci-app-amlogic/root/etc/config/amlogic
+        sed -i "s|ARMv8|larmv8|g" package/openwrt-packages/luci-app-amlogic/luci-app-amlogic/root/etc/config/amlogic
+        sed -i "s|opt/kernel|https://github.com/breakings/OpenWrt/tree/main/opt/kernel|g" package/openwrt-packages/luci-app-amlogic/luci-app-amlogic/root/etc/config/amlogic
     - name: Download package
       run: |
         cd openwrt
@@ -78,21 +80,27 @@ jobs:
       run: df -hT
     - name: Organize files
       run: |
-        rm -rf openwrt/bin/targets/x86/64/packages
-        cd openwrt/bin/targets/*/*
-        bzip2 *.img
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-    - name: Create release
+        bin1=openwrt/bin/targets/armvirt/64
+        mkdir -p bin2 && cp $bin1/* bin2
+        rm -rf $bin1/*.tar.gz bin2/packages
+        tar -zcvf bin.tar.gz openwrt/bin
+        cp bin.tar.gz bin2
+    - name: upload release
       uses: ncipollo/release-action@v1
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      if: env.UPLOAD_RELEASE == 'true' && ${{ env.PACKAGED_STATUS }} == 'success' && !cancelled()
       with:
-        name: ${{ env.DATE }} 🚀 x64精简版 | 自动编译
+        name: ${{ env.DATE }} 🚀 armv8系列懒人版 | 自动编译
         allowUpdates: true
-        tag: x64
+        tag: larmv8
         commit: master
         token: ${{ secrets.RELEASES_TOKEN }}
         body: |
           ${{ env.useVersionInfo }}
-        artifacts: ${{ env.FIRMWARE }}/*
+        artifacts: bin2/*.tar.gz,bin2/config.buildinfo
+    - name: 触发打包流
+      uses: peter-evans/repository-dispatch@v1
+      with:
+        token: ${{ secrets.RELEASES_TOKEN }}
+        event-type: ldb
     - name: pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}发布成功-编译结束","template":"json"}' http://www.pushplus.plus/send

@@ -1,7 +1,4 @@
-x64精简版
-![](https://img.shields.io/github/workflow/status/binge8/op/x64精简版?style=flat-square)    
-x64懒人版
-![](https://img.shields.io/github/workflow/status/binge8/op/x64懒人版?style=flat-square)
+x64精简版![](https://img.shields.io/github/workflow/status/binge8/op/x64精简版?style=flat-square) x64懒人版![](https://img.shields.io/github/workflow/status/binge8/op/x64懒人版?style=flat-square) armv8精简版![](https://img.shields.io/github/workflow/status/binge8/op/armv8精简版?style=flat-square)  armv8懒人版![](https://img.shields.io/github/workflow/status/binge8/op/armv8懒人版?style=flat-square)
 
 # Actions-OpenWrt  
 🚀 推荐本人[➦自用稳定机场](https://moo.pet/VHTm7),新用户限时专属8折优惠码来了:binbin666.返佣是我持续编译的最大动力.本仓库永久每天早上会编译出最新固件。    
