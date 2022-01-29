@@ -2,13 +2,8 @@ name: armv8懒人版
 
 on:
   repository_dispatch:
-    types: [armv8懒人版,sshlarmv8]
+    types: larmv8
   workflow_dispatch:
-    inputs:
-      ssh:
-        description: 'armv8懒人版'
-        required: false
-        default: 'false'
   schedule:
     - cron: 00 16 * * *
 
@@ -70,12 +65,6 @@ jobs:
         sed -i "s|https.*/OpenWrt|https://github.com/binge8/op|g" package/openwrt-packages/luci-app-amlogic/luci-app-amlogic/root/etc/config/amlogic
         sed -i "s|ARMv8|larmv8|g" package/openwrt-packages/luci-app-amlogic/luci-app-amlogic/root/etc/config/amlogic
         sed -i "s|opt/kernel|https://github.com/breakings/OpenWrt/kernel|g" package/openwrt-packages/luci-app-amlogic/luci-app-amlogic/root/etc/config/amlogic
-    - name: SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'sshlarmv8')
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
     - name: Download package
       run: |
         cd openwrt
