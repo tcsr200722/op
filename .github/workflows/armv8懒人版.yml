@@ -96,7 +96,7 @@ jobs:
         body: |
           ${{ env.useVersionInfo }}
         artifacts: openwrt/bin/targets/*/*/*.tar.gz,openwrt/bin/targets/*/*/config.buildinfo
-    - name: Trigger build
+    - name: 触发打包流
       uses: peter-evans/repository-dispatch@v1
       with:
         token: ${{ secrets.RELEASES_TOKEN }}
