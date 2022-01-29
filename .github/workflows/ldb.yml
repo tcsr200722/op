@@ -4,8 +4,8 @@ on:
   repository_dispatch:
     types: ldb
   workflow_dispatch:
-  schedule:
-    - cron: 00 23 * * *
+  #schedule:
+    #- cron: 00 23 * * *
 
 env:
   UPLOAD_RELEASE: true
@@ -45,5 +45,5 @@ jobs:
         tag: larmv8
         token: ${{ secrets.RELEASES_TOKEN }}
         artifacts: ${{ env.PACKAGED_OUTPUTPATH }}/*
-    - name: WeChat notification #pushbot推送
+    - name: pushbot推送
       run: curl -H "Content-Type:application/json" -X POST -d '{"token":"${{ secrets.pushbot }}","title":"Actions云编译","content":"${{ env.FILE_NAME }}成功","template":"json"}' http://www.pushplus.plus/send
