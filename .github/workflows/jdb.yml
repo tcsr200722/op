@@ -9,7 +9,6 @@ on:
 
 env:
   UPLOAD_RELEASE: true
-  TZ: Asia/Shanghai
   FILE_NAME: jdb
 
 jobs:
