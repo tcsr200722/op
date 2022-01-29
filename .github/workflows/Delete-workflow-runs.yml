@@ -1,8 +1,8 @@
-name: Delete workflow runs
+name: 删除指定工作流
 
 on:
   repository_dispatch:
-    types: [dl]
+    types: dl
   workflow_dispatch:
   schedule:
     - cron: 0 0 */2 * *
